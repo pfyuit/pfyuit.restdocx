@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pfyuit.restdocx.mapper.ItemMapper">
+
+	<resultMap id="ItemType" type="Item">
+		<id property="name" column="name" />
+		<result property="url" column="url" />
+		<result property="method" column="method" />
+		<result property="param" column="param" />
+		<result property="format" column="format" />
+		<result property="input" column="input" />
+		<result property="output" column="output" />
+		<result property="note" column="note" />
+		<association property="category" javaType="Category">
+			<id property="name" column="category_name" />
+			<result property="url" column="category_url" />
+		</association>
+	</resultMap>
+
+	<insert id="save">
+		INSERT INTO item (name, url, method, param, format, input, output, note, categoryName)
+		VALUES (#{name}, #{url}, #{method}, #{param}, #{format}, #{input}, #{output}, #{note}, #{category.categoryName})
+	</insert>
+	
+	<delete id="delete">
+		DELETE FROM item 
+		WHERE name= #{name}
+	</delete>
+	
+	<update id="update">
+		UPDATE item SET
+		name = #{name}, 
+		url = #{url}, 
+		method = #{method}, 
+		param = #{param}, 
+		format = #{format}, 
+		input = #{input}, 
+		ouput = #{output}, 
+		note = #{note}, 
+		categoryName = #{category.categoryName})
+		WHERE name= #{name}
+	</update>
+	
+	<select id="find" resultMap="ItemType">
+		SELECT i.*, c.name as category_name, c.url as category_url FROM item i
+		INNER JOIN category c
+		ON i.categoryName = c.name
+		WHERE i.name = #{name}
+	</select>
+	
+	<select id="findAll" resultMap="ItemType">
+		SELECT i.*, c.name as category_name, c.url as category_url FROM item i
+		INNER JOIN category c
+		ON i.categoryName = c.name
+	</select>
+
+</mapper>
